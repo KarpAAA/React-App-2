@@ -7,17 +7,18 @@ type Option = {
     value: string,
     icon: IconProp,
     iconColor: string,
-    event: () => void
+    event: (e?:any) => void
 }
 type OptionMenuProps  = {
-    options: Option[]
+    options: Option[],
+    right?: boolean
 }
-export const OptionsMenu: FC<OptionMenuProps> = ({options}) => {
+export const OptionsMenu: FC<OptionMenuProps> = ({options, right}) => {
 
     return (
-        <div className={"absolute top-8 right-1 bg-white border rounded border-solid border-gray-500"}>
+        <div className={`absolute top-6 ${ right ? 'left-1' : 'right-1'} bg-white border rounded border-solid border-gray-500 z-50`}>
             <div
-                className={'px-5 py-3  font-normal flex flex-col'}
+                className={'px-5 py-3 font-normal flex flex-col items-start'}
             >
                 {options.map((option,index) => (
                     <div key={index} className={`mb-2 whitespace-nowrap text-sm text-${option.iconColor}`} onClick={option.event}>

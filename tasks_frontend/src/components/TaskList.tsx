@@ -1,10 +1,10 @@
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {fas} from "@fortawesome/free-solid-svg-icons";
 import {Task} from "./Task";
-import {FC, useState} from "react";
+import React, {FC, useState} from "react";
 import {OptionsMenu} from "./OptionsMenu";
 import {
-    useDeleteTaskListMutation
+    useDeleteTaskListMutation, useEditOrderTaskListMutation, useMoveTaskMutation
 } from "../store/apis/task.api";
 import {useNavigate} from "react-router-dom";
 import {uiActions} from "../store/slices/ui.slice";
@@ -22,6 +22,8 @@ export const TaskList: FC<TaskListProps> = ({list}) => {
     const dispatcher = useAppDispatch();
     const [optionsSelected, setOptionsSelected] = useState(false);
     const [taskListDelete] = useDeleteTaskListMutation();
+    const [moveTask] = useMoveTaskMutation();
+    const [editTaskListOrder] = useEditOrderTaskListMutation();
     const handleAddNewCard = () => {
         dispatcher(taskFormActions.taskPropertyChange({
             property: 'tasksListId',
@@ -29,9 +31,6 @@ export const TaskList: FC<TaskListProps> = ({list}) => {
         }))
         dispatcher(uiActions.setModalOpenState(true));
         navigate('task/create');
-    }
-    const handleOptionsClicked = () => {
-        setOptionsSelected(!optionsSelected);
     }
 
     const handleTaskListEdit = () => {
@@ -44,8 +43,7 @@ export const TaskList: FC<TaskListProps> = ({list}) => {
         try {
             await taskListDelete(list.id).unwrap();
             setOptionsSelected(false);
-        }
-        catch (e: any) {
+        } catch (e: any) {
             dispatcher(setErrorAction({message: e.data.message, mills: 5000}))
         }
     }
@@ -70,19 +68,47 @@ export const TaskList: FC<TaskListProps> = ({list}) => {
             event: handleTaskListDelete
         }
     ]
+    const handleOnDrop = (e: React.DragEvent) => {
+        const taskId = e.dataTransfer.getData("taskId") as string;
+        const listId = e.dataTransfer.getData("listId") as string;
 
+        if(listId) {
+            editTaskListOrder({id: +listId, order: list.id});
+        }
+        else if(taskId) {
+            moveTask({tasksListId: list.id, id: +taskId});
+        }
+
+    }
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault();
+    }
+
+    const handleOnDrag = (listId: number) => (e: React.DragEvent) => {
+        e.stopPropagation();
+        e.dataTransfer.setData('listId', listId.toString());
+    }
 
     return (
-        <div className={'box-border w-1/4 flex flex-col px-4 flex-shrink-0'}>
+        <div
+            draggable
+            onDragStart={handleOnDrag(list.id)}
+            onDrop={handleOnDrop}
+            onDragOver={handleDragOver}
+            style={{background: "linear-gradient(0.38turn, #EBECF0, #EBECF0)"}}
+            className={'hover:cursor-grab box-border rounded w-[calc(25%-1rem)] h-fit mx-2 flex flex-col flex-shrink-0 p-3'}>
             <div id={'list-options'}
-                 className={'mb-3 py-2 flex flex-row justify-between font-bold text-lg border-solid border-b-2 border-t-2'}>
+                 className={'py-3 flex flex-row justify-between font-medium  text-lg'}>
                 <div id={'list-name'}>{list.title}</div>
 
                 <div id={'list-options-operations'} className={'flex flex-row'}>
-                    <div className={'pr-2'}>{list.number}</div>
-                    <div className={'cursor-pointer relative'}
-                         onClick={handleOptionsClicked}>
-                        <FontAwesomeIcon className={'px-1'} icon={fas.faEllipsisVertical}/>
+                    <div
+                        onMouseEnter={() => setOptionsSelected(true)}
+                        onMouseLeave={() => setOptionsSelected(false)}
+                        className={'cursor-pointer relative'}
+                    >
+                        <FontAwesomeIcon style={{color: '#7F8A9D'}} className={'px-1 font-normal'}
+                                         icon={fas.faEllipsis}/>
                         {optionsSelected &&
                             <OptionsMenu options={options}></OptionsMenu>
                         }
@@ -91,19 +117,22 @@ export const TaskList: FC<TaskListProps> = ({list}) => {
                 </div>
 
             </div>
-            <div className={'mb-3'}>
+
+
+            {list.tasks && list.tasks.map(task => (
+                <Task key={task.id} task={task}></Task>
+            ))}
+
+            <div className={'ml-2'}>
                 <button
                     onClick={handleAddNewCard}
-                    className={'w-full text-black text-xl border-dashed border-2 rounded text-center p-2'}
+                    className={'w-full text-md text-left text-gray-500'}
                 >
-                    <FontAwesomeIcon className={'pr-2'} icon={fas.faPlus}/>Add new card
+                    <FontAwesomeIcon className={'pr-2'} icon={fas.faPlus}/>
+                    Add new card
 
                 </button>
-
-
             </div>
-
-            {list.tasks && list.tasks.map(task => (<Task key={task.id} task={task} taskListId={list.id}></Task>))}
         </div>
     );
 }

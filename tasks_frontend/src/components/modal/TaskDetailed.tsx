@@ -10,10 +10,10 @@ type TaskDetailedProps =  {
     modalContainer: HTMLElement | null
 }
 export const TaskDetailed: FC<TaskDetailedProps> = ({modalContainer}) => {
+    const dispatcher = useAppDispatch();
+
     const {id} = useParams();
     const {data: task} = useGetTaskByIdQuery(parseInt(id!));
-
-    const dispatcher = useAppDispatch();
 
     if (modalContainer) {
         modalContainer.style.left = '10%';
@@ -29,10 +29,12 @@ export const TaskDetailed: FC<TaskDetailedProps> = ({modalContainer}) => {
     }
 
     return (
-        <div className={"w-full h-full bg-white"}>
+        <div
+            className={"w-full h-full bg-white"}>
             <div
+                style={{background: '#4289A7'}}
                 onClick={handleModalClose}
-                className={'flex justify-end bg-blue-950 text-white text-3xl px-5 py-2 -full rounded-t'}>
+                className={'flex justify-end text-white text-3xl px-5 py-2 -full rounded-t'}>
                 <FontAwesomeIcon icon={fas.faXmark}/>
             </div>
 

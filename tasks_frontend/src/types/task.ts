@@ -3,7 +3,6 @@ import {TaskPriority} from "./task.priority";
 import {TaskStatus} from "./task.status";
 
 export class Task {
-
     constructor(
         public title: string,
         public content: string,

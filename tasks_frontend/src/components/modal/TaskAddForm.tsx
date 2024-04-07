@@ -49,27 +49,30 @@ export const TaskAddForm: React.FC<TaskAddFormProps> = ({modalContainer, edit} )
         handleModalClose();
     }
     return (
-        <div className={"w-2/5 h-4/5 bg-gray-400"} style={{left: '10%', top: "10%"}}>
+        <div
+            style={{left: '10%', top: "10%", background: "linear-gradient(0.38turn, #EBECF0, #EBECF0)", color: "black"}}
+            className={"w-2/5 h-4/5"}>
             <div
+                style={{background: '#4289A7'}}
                 onClick={handleModalClose}
-                className={'flex justify-end bg-blue-950 text-white text-3xl px-5 py-2 -full rounded-t'}>
+                className={'flex justify-end text-white text-3xl px-5 py-2 -full rounded-t'}>
                 <FontAwesomeIcon icon={fas.faXmark}/>
             </div>
 
             <div className={'flex flex-col items-center'}>
-                <div className={'text-white text-3xl my-3'}>{edit ? 'Edit' : 'Add'} task</div>
+                <div className={'text-3xl my-3'}>{edit ? 'Edit' : 'Add'} task</div>
                 <form className={'flex flex-col justify-center items-center'} onSubmit={handleSubmit}>
                     <div className="mx-10 flex flex-row justify-center">
                         <div className={'flex flex-col'}>
-                            <label htmlFor="title" className="text-white text-lg  mr-5 my-2 py-1">Title:</label>
-                            <label htmlFor="content" className="text-white text-lg  mr-5 my-2 py-1">Due Date:</label>
-                            <label htmlFor="priority" className="text-white text-lg  mr-5 my-2 py-1">Priority:</label>
-                            <label htmlFor="status" className="text-white text-lg  mr-5 my-2 py-1">Status:</label>
-                            <label htmlFor="title" className="text-white text-lg  mr-5 my-2 py-1">Content:</label>
+                            <label htmlFor="title" className=" text-lg  mr-5 my-2 py-1">Title:</label>
+                            <label htmlFor="content" className=" text-lg mr-5 my-2 py-1">Due Date:</label>
+                            <label htmlFor="priority" className=" text-lg mr-5 my-2 py-1">Priority:</label>
+                            <label htmlFor="status" className=" text-lg  mr-5 my-2 py-1">Status:</label>
+                            <label htmlFor="title" className=" text-lg  mr-5 my-2 py-1">Content:</label>
                         </div>
                         <div className={'flex flex-col'} >
                             <input
-                                className="bg-gray-600 text-white pl-5 py-1 text-lg rounded my-2"
+                                className="pl-5 py-1 text-lg rounded my-2"
                                 value={task.title}
                                 onChange={handleInputChange('title')}
                                 required={true}
@@ -77,13 +80,13 @@ export const TaskAddForm: React.FC<TaskAddFormProps> = ({modalContainer, edit} )
 
 
                             <input type={'date'}
-                                   className="bg-gray-600 text-white pl-5 py-1 text-lg rounded my-2"
+                                   className="pl-5 py-1 text-lg rounded my-2"
                                    value={task.date}
                                    onChange={handleInputChange('date')}
                             required={true}/>
                             <select
                                 id="priority"
-                                className="bg-gray-600 text-white pl-5 py-1 text-lg rounded my-2"
+                                className="pl-5 py-1 text-lg rounded my-2"
                                 value={task.priority}
                                 onChange={handleInputChange('priority')}
                             >
@@ -94,7 +97,7 @@ export const TaskAddForm: React.FC<TaskAddFormProps> = ({modalContainer, edit} )
                             </select>
                             <select
                                 id="priority"
-                                className="bg-gray-600 text-white pl-5 py-1 text-lg rounded my-2"
+                                className="pl-5 py-1 text-lg rounded my-2"
                                 value={task.status}
                                 onChange={handleInputChange('status')}
                             >
@@ -105,14 +108,14 @@ export const TaskAddForm: React.FC<TaskAddFormProps> = ({modalContainer, edit} )
                             </select>
 
                             <textarea
-                                className="bg-gray-600 text-white pl-5 py-1 text-md rounded my-2"
+                                className="pl-5 py-1 text-md rounded my-2"
                                 value={task.content}
                                 onChange={handleInputChange('content')} rows={4} cols={30}
                                 required={true}
                             />
                         </div>
                     </div>
-                    <button className={'rounded bg-blue-950 text-lg w-1/5 py-2 text-white mt-2'}>Save</button>
+                    <button className={'rounded bg-green-700 text-white text-lg w-1/5 py-2  mt-2'}>Save</button>
 
                 </form>
 

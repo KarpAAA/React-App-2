@@ -21,11 +21,9 @@ const DateHelpers = () => {
         };
 
         // Розділити вхідну дату на складові
-        const parts = inputDate.split(', ');
 
-        // Визначити день, місяць і рік
-        const day = parseInt(parts[1].split(' ')[0]);
-        const monthStr = parts[1].split(' ')[1];
+        const day = parseInt(inputDate.split(' ')[0]);
+        const monthStr = inputDate.split(' ')[1];
         const year = new Date().getFullYear(); // Беремо поточний рік
 
 

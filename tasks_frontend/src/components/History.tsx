@@ -2,24 +2,29 @@ import {fas} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {uiActions} from "../store/slices/ui.slice";
 import {useGetAllHistoryQuery} from "../store/apis/task.api";
-import {useAppDispatch} from "../app/hooks";
+import {useAppDispatch, useAppSelector} from "../app/hooks";
 
 
 export const History = () => {
     const dispatcher = useAppDispatch();
-    const {data: operations} = useGetAllHistoryQuery();
+    const {selectedBoardId} = useAppSelector(state => state.ui);
+    const {data: operations} = useGetAllHistoryQuery(selectedBoardId!);
 
     const handleCloseHistory = () => {
         dispatcher(uiActions.setHistoryOpenState(false));
     }
     return (
-        <div className={"fixed right-0 top-0 z-10 h-full w-1/4"}>
-            <div className={'flex flex-row justify-between p-4 text-white text-lg bg-blue-950  w-full'}>
+        <div
+            style={{background: '#4289A7'}}
+            className={"fixed right-0 top-0 z-10 h-full w-1/4"}>
+            <div className={'flex flex-row justify-between p-4 text-white text-lg w-full'}>
                 <div>History</div>
                 <div onClick={handleCloseHistory}><FontAwesomeIcon className={'px-1'} icon={fas.faXmark}/></div>
             </div>
 
-            <div className={'bg-gray-100 h-full overflow-auto py-10'}>
+            <div
+                style={{background: "linear-gradient(0.38turn, #EBECF0, #EBECF0)"}}
+                className={'bg-gray-100 h-full overflow-auto py-10'}>
                 {
                     operations && operations.length > 0
                     &&

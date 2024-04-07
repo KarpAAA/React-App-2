@@ -1,28 +1,25 @@
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {fas} from "@fortawesome/free-solid-svg-icons";
 import {uiActions} from "../../store/slices/ui.slice";
-import React, {ChangeEvent, FormEvent} from "react";
-import {
-    useCreateTaskListMutation,
-    useEditTaskListMutation,
-} from "../../store/apis/task.api";
+import React, {ChangeEvent, FormEvent, useEffect} from "react";
+import {useCreateBoardMutation} from "../../store/apis/task.api";
 import {setErrorAction} from "../../store/slices/error.slice";
-import {taskListFormActions} from "../../store/slices/task.list.form.slice";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
+import {boardFormAction} from "../../store/slices/board.form.slice";
 
 
-type TaskListAddFormProps = {
-    modalContainer:  HTMLElement | null,
+type BoardAddFormProps = {
+    modalContainer: HTMLElement | null,
     edit?: boolean
 }
-export const TaskListAddForm: React.FC<TaskListAddFormProps> = ({modalContainer, edit}) => {
+export const BoardAddForm: React.FC<BoardAddFormProps> = ({modalContainer, edit}) => {
     const dispatcher = useAppDispatch();
+    const {board} = useAppSelector(state => state.board);
+    const [createBoardDTO] = useCreateBoardMutation();
 
-    const {taskList} = useAppSelector(state => state.taskListForm);
-    const {selectedBoardId} = useAppSelector(state => state.ui);
-
-    const [createTaskList] = useCreateTaskListMutation();
-    const [editTaskList] = useEditTaskListMutation();
+    useEffect(() => {
+        clearInputs();
+    }, []);
 
     if (modalContainer) {
         modalContainer.style.left = '30%';
@@ -31,20 +28,20 @@ export const TaskListAddForm: React.FC<TaskListAddFormProps> = ({modalContainer,
     const handleInputChange = (property: string) => (
         e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>
     ) => {
-        dispatcher(taskListFormActions.taskPropertyChange({property, value: e.target.value}));
+        dispatcher(boardFormAction.boardPropertyChange({property, value: e.target.value}));
+    }
+    const clearInputs = () => {
+        dispatcher(boardFormAction.clearToInitial());
     }
     const handleModalClose = () => {
-        dispatcher(taskListFormActions.clearToInitial());
+        clearInputs();
         dispatcher(uiActions.setModalOpenState(false));
     }
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const newTaskList =
-            {...taskList, boardId: selectedBoardId ? selectedBoardId : -1};
         try {
-            if (edit) {
-                await editTaskList(newTaskList).unwrap();
-            } else await createTaskList(newTaskList).unwrap();
+            const res = await createBoardDTO(board).unwrap();
+            dispatcher(uiActions.setSelectedBoard(res.id));
         } catch (e: any) {
             dispatcher(setErrorAction({message: e.data.message, mills: 5000}))
         }
@@ -62,19 +59,21 @@ export const TaskListAddForm: React.FC<TaskListAddFormProps> = ({modalContainer,
             </div>
 
             <div className={'flex flex-col items-center mt-10'}>
-                <div className={' text-3xl my-3'}>{edit ? 'Edit' : 'Add'} task list</div>
+                <div className={' text-3xl my-3'}>{edit ? 'Edit' : 'Add'} board</div>
                 <form className={'flex flex-col justify-center items-center'} onSubmit={handleSubmit}>
                     <div className="mx-10 flex flex-row justify-center">
                         <div className={'flex flex-col'}>
                             <label htmlFor="title" className=" text-lg  mr-5 my-2 py-1">Title:</label>
+
                         </div>
                         <div className={'flex flex-col'}>
                             <input
                                 className="pl-5 py-1 text-lg rounded my-2"
-                                value={taskList.title}
+                                value={board.title}
                                 onChange={handleInputChange('title')}
                                 required={true}
                             />
+
                         </div>
                     </div>
                     <button

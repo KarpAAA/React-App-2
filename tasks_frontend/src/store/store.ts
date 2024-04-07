@@ -5,6 +5,7 @@ import uiSlice from "./slices/ui.slice";
 import taskFormSlice from "./slices/task.form.slice";
 import errorSlice from "./slices/error.slice";
 import taskListFormSlice from "./slices/task.list.form.slice";
+import boardFormSlice from "./slices/board.form.slice";
 
 export const store = configureStore({
     reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
         taskForm: taskFormSlice,
         error: errorSlice,
         taskListForm: taskListFormSlice,
+        board: boardFormSlice,
     },
 
     middleware: (getDefaultMiddleware) =>
