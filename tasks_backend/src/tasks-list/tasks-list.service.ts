@@ -2,30 +2,28 @@ import { Injectable } from "@nestjs/common";
 import { CreateTasksListDto } from "./dto/create-tasks-list.dto";
 import { UpdateTasksListDto } from "./dto/update-tasks-list.dto";
 import { InjectRepository } from "@nestjs/typeorm";
-import { TasksList } from "../entities/tasks.list.model";
+import { TasksList } from "../entities/tasks-list.model";
 import { Repository } from "typeorm";
-import { TasksService } from "../tasks/tasks.service";
+import { TaskBoard } from "../entities/task-board.model";
+import { UpdateTasksListOrderDto } from "./dto/update-tasks-list-order.dto";
 
 @Injectable()
 export class TasksListService {
 
-  constructor(private taskService: TasksService,
-              @InjectRepository(TasksList)
-              private tasksListRepository: Repository<TasksList>) {
+  constructor(@InjectRepository(TasksList) private tasksListRepository: Repository<TasksList>,
+              @InjectRepository(TaskBoard) private boardRepository: Repository<TaskBoard>
+  ) {
   }
 
-  create(createTasksListDto: CreateTasksListDto) {
-    return this.tasksListRepository.save({ ...createTasksListDto });
-  }
+  async create({ boardId, ...other }: CreateTasksListDto) {
+    const board = await
+      this.boardRepository.findOne({ where: { id: boardId } });
+    if (!board) {
+      throw new Error("Board not found");
+    }
+    const taskList = await this.tasksListRepository.save({ ...other, board });
 
-  async findAll() {
-    const taskList = await this.tasksListRepository.find({ relations: ["tasks"] });
-    const res = taskList.map(taskList => ({
-      ...taskList,
-      tasks: taskList.tasks.map(task => this.taskService.taskToTaskDTO(task))
-    })).sort((taskList1,taskList2) => taskList1.id - taskList2.id);
-
-    return res;
+    return this.tasksListRepository.update(taskList.id, { order: taskList.id });
   }
 
   findOne(id: number) {
@@ -43,5 +41,13 @@ export class TasksListService {
 
   remove(id: number) {
     return this.tasksListRepository.delete({ id });
+  }
+
+  async updateOrder({ id: i, order }: UpdateTasksListOrderDto) {
+    const tasksListMoved = await this.findOne(order);
+    const tasksListForced = await this.findOne(i);
+
+    await this.tasksListRepository.save({ ...tasksListMoved, order: tasksListForced.order });
+    return this.tasksListRepository.save({ ...tasksListForced, order: tasksListMoved.order });
   }
 }

@@ -1,20 +1,35 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Operation } from "../entities/operation.model";
-import { Repository } from "typeorm";
-import { TasksList } from "../entities/tasks.list.model";
+import { In, Repository } from "typeorm";
 import { OperationDTO } from "./dto/operation.dto";
-import DateHelpers from "../utils/helpers/date.helpers";
+import { TaskBoard } from "../entities/task-board.model";
 
 @Injectable()
 export class HistoryService {
 
-  constructor(@InjectRepository(Operation) private operationRepository: Repository<Operation>){}
+  constructor(
+    @InjectRepository(Operation) private operationRepository: Repository<Operation>,
+    @InjectRepository(TaskBoard) private boardRepository: Repository<TaskBoard>,
+  ){}
 
-  async findAll() {
-    const operations = await  this.operationRepository.find({});
+  async findAll(boardId: number) {
+    const board = await this.boardRepository.findOne({where: {id: boardId}});
+    if(board){
+      const tasksIds = [];
+      board.tasksLists.forEach(list =>
+        list.tasks
+          .map(t => t.id)
+          .forEach(tId => tasksIds.push(tId))
+      );
 
-    return operations.map(operation => this.operationToOperationDTO(operation));
+      const operations = await  this.operationRepository.find({
+        where: {task: {id: In(tasksIds)}}
+      });
+
+      return operations.map(operation => this.operationToOperationDTO(operation));
+    }
+    return "Bad request";
   }
 
   public operationToOperationDTO(operation: Operation): OperationDTO{

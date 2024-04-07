@@ -1,6 +1,6 @@
 import { TaskPriority } from "../../entities/task/task.priority";
 import { TaskStatus } from "../../entities/task/task.status";
-import { TasksList } from "../../entities/tasks.list.model";
+import { TasksList } from "../../entities/tasks-list.model";
 import { Operation } from "../../entities/operation.model";
 
 export class CreateTaskDto {
