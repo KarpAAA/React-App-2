@@ -34,7 +34,6 @@ export const Task: FC<TaskProps> = ({task}) => {
         deleteTask(task.id);
         setOptionsSelected(false);
     }
-
     const handleTaskClicked = () => {
         dispatcher(uiActions.setModalOpenState(true));
         navigate(`/task/${task.id}`)
@@ -63,6 +62,7 @@ export const Task: FC<TaskProps> = ({task}) => {
         task.content.slice(0, Constants.maxTaskChars) + "..." : task.content
     return (
             <div
+                data-testid="task"
                 draggable
                 onDragStart={handleOnDrag(task.id)}
                 className={'' +
@@ -80,9 +80,8 @@ export const Task: FC<TaskProps> = ({task}) => {
                 </div>
                 <div className={'flex flex-row justify-between font-medium text-lg my-2'}>
                     <div onClick={handleTaskClicked} className={'break-all'}>{task.title}</div>
-
                 </div>
-                <div className={'text-black text-sm mb-3 break-words'}>
+                <div data-testid="task-content" className={'text-black text-sm mb-3 break-words'}>
                     {contentWithLimitChars}
                 </div>
 
@@ -106,23 +105,6 @@ export const Task: FC<TaskProps> = ({task}) => {
                     </div>
                 </div>
 
-                {/*<div id={'task-priority'} className={"border rounded-full bg-gray-100 w-fit px-2 py-1 text-sm mb-3"}>*/}
-                {/*    <FontAwesomeIcon icon={fas.faCircle}*/}
-                {/*                     className={`mr-1 text-sm w-2 h-3 mb-0.5 text-${task.priority}`}/>*/}
-                {/*    {task.priority}*/}
-                {/*</div>*/}
-                {/*<div>*/}
-                {/*    <select className={'border rounded bg-gray-600 text-white text-sm w-full px-3 py-1'}*/}
-                {/*            value={taskListId}*/}
-                {/*            onChange={handleMoveToChange}>*/}
-
-                {/*        {tasksList && tasksList.map(task => {*/}
-                {/*            return {title: task.title, id: task.id}*/}
-                {/*        }).map(({title, id}) => (*/}
-                {/*            <option key={id} value={id}>{title}</option>*/}
-                {/*        ))}*/}
-                {/*    </select>*/}
-                {/*</div>*/}
             </div>
 
     );
