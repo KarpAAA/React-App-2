@@ -25,3 +25,20 @@ setupListeners(store.dispatch)
 
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
+
+export function createTestStore() {
+    const store = configureStore({
+        reducer: {
+            [taskApi.reducerPath]: taskApi.reducer,
+            ui: uiSlice,
+            taskForm: taskFormSlice,
+            error: errorSlice,
+            taskListForm: taskListFormSlice,
+            board: boardFormSlice,
+        },
+
+        middleware: (getDefaultMiddleware) =>
+            getDefaultMiddleware().concat(taskApi.middleware),
+    })
+    return store;
+}
