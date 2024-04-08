@@ -14,7 +14,6 @@ export class Operation {
   @Column()
   dateTime:string;
 
-  @ManyToOne(type => Task, task => task.history, {onDelete: "CASCADE"})
+  @ManyToOne(type => Task, task => task.history, {onDelete: 'CASCADE'})
   task?: Task
-
 }

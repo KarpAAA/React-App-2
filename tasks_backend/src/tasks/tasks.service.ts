@@ -4,7 +4,7 @@ import { UpdateTaskDto } from "./dto/update-task.dto";
 import { Repository } from "typeorm";
 import { Task } from "../entities/task/task.model";
 import { InjectRepository } from "@nestjs/typeorm";
-import { TasksList } from "../entities/tasks.list.model";
+import { TasksList } from "../entities/tasks-list.model";
 import { TaskDTO } from "./dto/task.dto";
 import DateHelpers from "../utils/helpers/date.helpers";
 import { TaskPriority } from "../entities/task/task.priority";
@@ -23,19 +23,13 @@ export class TasksService {
   }
 
   async create(createTaskDto: CreateTaskDto) {
-    const { tasksListId, date, ...other } = createTaskDto;
+    const { tasksListId, date } = createTaskDto;
 
     const list =
       await this.tasksListRepository.findOne({ where: { id: tasksListId } });
-
-
-    return this.taskRepository.save({ list, date: new Date(date), ...createTaskDto });
+    return this.taskRepository.save({ list, date: new Date(date), ...createTaskDto});
   }
 
-  async findAll() {
-    const tasks = await this.taskRepository.find({ relations: ["list"] });
-    return tasks.map(task => this.taskToTaskDTO(task));
-  }
 
   async findOne(id: number) {
     const task = await this.taskRepository.findOne({ where: { id }, relations: ["list"] });
@@ -55,8 +49,6 @@ export class TasksService {
       ];
       task.list = newTaskList;
     }
-
-
 
     const editOperation = this.formUpdateOperation(task, other);
     if(editOperation){

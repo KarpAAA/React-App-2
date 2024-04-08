@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "ty
 import { TaskPriority } from "./task.priority";
 import { TaskStatus } from "./task.status";
 import { Operation } from "../operation.model";
-import { TasksList } from "../tasks.list.model";
+import { TasksList } from "../tasks-list.model";
 
 @Entity()
 export class Task {
@@ -25,10 +25,10 @@ export class Task {
   @Column()
   status: TaskStatus
 
-  @OneToMany(type => Operation, operation => operation.task, {cascade: true, eager: true, onDelete: "CASCADE"})
+  @OneToMany(type => Operation, operation => operation.task, {cascade: true, eager: true})
   history: Operation[]
 
-  @ManyToOne(type => TasksList, tasksList => tasksList.tasks, { onDelete: "CASCADE"})
+  @ManyToOne(type => TasksList, tasksList => tasksList.tasks, {onDelete: "CASCADE"})
   list: TasksList
 
 }
