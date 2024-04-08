@@ -1,0 +1,51 @@
+services:
+  main:
+    container_name: main
+    build:
+      context: tasks_backend
+      dockerfile: Dockerfile
+    working_dir: /app
+    env_file:
+      - ./tasks_backend/.env
+    volumes:
+      - /app/node_modules
+    ports:
+      - 3000:3000
+      - 9229:9229
+    command: npm run start:dev
+    depends_on:
+      - postgres
+    restart: always
+  postgres:
+    container_name: postgres
+    image: postgres:12
+    env_file:
+      - ./tasks_backend/.env
+    environment:
+      POSTGRES_DB: tasks_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      PG_DATA: /var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+
+  front:
+    container_name: front
+    build:
+      context: tasks_frontend
+      dockerfile: Dockerfile
+    env_file:
+      - ./tasks_frontend/.env
+    volumes:
+      - /react-app/node_modules
+    ports:
+      - 3006:3006
+    command: npm run start
+    depends_on:
+      - main
+    restart: always
+volumes:
+  pgdata:
