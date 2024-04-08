@@ -2,7 +2,7 @@ import React, {FC} from 'react';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {fas} from "@fortawesome/free-solid-svg-icons";
 
-type EditableInputProps = {
+export type EditableInputProps = {
     initialValue: string,
     isEditable: boolean,
     handleSave: () => void,
@@ -17,6 +17,7 @@ export const EditableInput: FC<EditableInputProps> =
             return (
                 <div>
                     <input
+                        data-testid='editable-input'
                         className={'bg-transparent border border-solid max-w-52'}
                         type="text"
                         value={value}
@@ -31,6 +32,6 @@ export const EditableInput: FC<EditableInputProps> =
                 </div>
             );
         } else {
-            return <span>{initialValue}</span>;
+            return <span data-testid='editable-span' >{initialValue}</span>;
         }
     };

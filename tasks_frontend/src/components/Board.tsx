@@ -77,6 +77,7 @@ export const Board: FC<BoardProps> = () => {
         dispatcher(uiActions.setSelectedBoardIdToInitial());
         deleteBoard({id: board?.id!});
     }
+
     return (
         <div>
             {boards && boards.length > 0 && selectedBoardId &&
