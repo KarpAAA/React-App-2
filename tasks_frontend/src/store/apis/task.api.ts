@@ -7,7 +7,7 @@ import BoardEndpoints from "./endpoints/board.endpoints";
 
 export const taskApi = createApi({
     reducerPath: 'taskApi',
-    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:3000'}),
+    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:8080'}),
     tagTypes: ["Task", "History", "Board"],
     endpoints: (builder) => ({
         ...TaskEndpoints(builder),

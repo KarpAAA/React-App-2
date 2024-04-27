@@ -7,8 +7,8 @@ export class Task {
         public title: string,
         public content: string,
         public date: string,
-        public status: TaskStatus,
-        public priority: TaskPriority,
+        public status: "TODO" | "IN_PROGRESS" | "DONE" | "REVIEW",
+        public priority: "LOW" | "MEDIUM" | "HIGH",
         public history: Operation[],
         public id: number,
         public tasksListId: number

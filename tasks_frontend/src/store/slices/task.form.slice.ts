@@ -35,7 +35,6 @@ const taskForm = createSlice({
         setEditTask(state, action) {
             const task = action.payload;
             let {date, priority, status} = task;
-            date = DateHelpers.formatDate(date);
             Object.keys(TaskPriority).forEach(key => {
                 if (TaskPriority[parseInt(key)] === priority) priority = key;
             })

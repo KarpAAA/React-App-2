@@ -1,15 +1,17 @@
 import {BaseQueryFn, EndpointBuilder, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta} from "@reduxjs/toolkit/query";
-import {Operation} from "../../../types/operation";
 import {Board} from "../../../types/board";
 import {CreateBoardDTO} from "../../../types/dto/create.board.dto";
 
 const BoardEndpoints = () => (builder:
-                                 EndpointBuilder<BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError, {}, FetchBaseQueryMeta>, "History" | "Task" | "Board", "taskApi">) => {
+                                  EndpointBuilder<BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError, {}, FetchBaseQueryMeta>, "History" | "Task" | "Board", "taskApi">) => {
 
     return {
         getBoardById: builder.query<Board, number | null>({
             query: (id) => `/board/${id}`,
-            providesTags: ["Board"]
+            providesTags: (result, error, arg) =>{
+                return  result ? ["Board", {type: 'Board' as const, id: result.id}] : ["Board"];
+            }
+
         }),
         getAllBoards: builder.query<Board[], void>({
             query: () => `/board`,
@@ -29,14 +31,18 @@ const BoardEndpoints = () => (builder:
                 method: 'PATCH',
                 body: newBoard,
             }),
-            invalidatesTags: ["Board"]
+            invalidatesTags: (result, error, arg) =>
+                result ? ["Board", {type: 'Board' as const, id: result.id}] : ["Board"],
         }),
         deleteBoard: builder.mutation<any, { id: number }>({
             query: ({id}) => ({
                 url: `/board/${id}`,
                 method: 'DELETE'
             }),
-            invalidatesTags: ["Board"]
+            invalidatesTags: (result, error, arg) => {
+                return result ? ["Board", {type: "Board" as const , id: result}] : ["Board"];
+            }
+
         }),
     }
 

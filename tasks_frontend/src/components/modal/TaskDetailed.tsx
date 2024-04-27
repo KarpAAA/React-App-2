@@ -14,7 +14,6 @@ export const TaskDetailed: FC<TaskDetailedProps> = ({modalContainer}) => {
 
     const {id} = useParams();
     const {data: task} = useGetTaskByIdQuery(parseInt(id!));
-
     if (modalContainer) {
         modalContainer.style.left = '10%';
         modalContainer.style.top = '10%';
@@ -72,7 +71,7 @@ export const TaskDetailed: FC<TaskDetailedProps> = ({modalContainer}) => {
 
                             </div>
                             <div className={'font-bold text-2xl mt-10 mb-5'}>Description</div>
-                            <div className={''}>
+                            <div className={'text-black'}>
                                 {task.content}
                             </div>
                         </div>
@@ -84,7 +83,7 @@ export const TaskDetailed: FC<TaskDetailedProps> = ({modalContainer}) => {
                             <div className={'overflow-auto max-h-96'}> {/* Додаємо стилі overflow та max-height */}
                                 {
                                     task && task.history && task.history.map(operation => (
-                                        <div className={'px-5 text-gray-500 pt-5'}>
+                                        <div key={operation.id} className={'px-5 text-gray-500 pt-5'}>
                                             <div className={'flex'}>
                                                 <FontAwesomeIcon icon={fas.faCircle}
                                                                  className={`mr-2 text-sm w-2 h-2 mt-2 text-gray-500`}/>

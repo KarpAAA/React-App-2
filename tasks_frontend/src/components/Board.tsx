@@ -74,15 +74,14 @@ export const Board: FC<BoardProps> = () => {
         setIsEditable(true);
     }
     const handleBoardDelete = () => {
-        dispatcher(uiActions.setSelectedBoardIdToInitial());
         deleteBoard({id: board?.id!});
+        dispatcher(uiActions.setSelectedBoardIdToInitial());
     }
-
     return (
         <div>
             {boards && boards.length > 0 && selectedBoardId &&
                 <div className={'flex flex-row justify-between py-4'}>
-                    <div className={'flex flex-row'}>
+                    {selectedBoardId && <div className={'flex flex-row'}>
 
                         <select
                             style={{backgroundColor: '#4188A7'}}
@@ -125,7 +124,7 @@ export const Board: FC<BoardProps> = () => {
                             </button>
                         </div>
 
-                    </div>
+                    </div>}
 
 
                     <div>

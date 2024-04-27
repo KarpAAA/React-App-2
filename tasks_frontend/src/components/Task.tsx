@@ -11,7 +11,6 @@ import {Task as T} from "../types/task";
 import {faClock} from "@fortawesome/free-regular-svg-icons/faClock";
 import {faChartBar} from "@fortawesome/free-regular-svg-icons/faChartBar";
 import {Constants} from "../utils/helpers/constants";
-import {TaskStatus} from "../types/task.status";
 
 type TaskProps = {
     task: T
@@ -98,8 +97,8 @@ export const Task: FC<TaskProps> = ({task}) => {
                     </div>
 
                     <div
-                        className={`${task.status === TaskStatus.DONE ? 'bg-green-500 text-white px-2 py-1 rounded' : ''}`}>
-                        <FontAwesomeIcon style={{color: `${task.status === TaskStatus.DONE ? '' : '#7F8A9D'}`}}
+                        className={`${task.status === "DONE" ? 'bg-green-500 text-white px-2 py-1 rounded' : ''}`}>
+                        <FontAwesomeIcon style={{color: `${task.status === "DONE" ? '' : '#7F8A9D'}`}}
                                          icon={faClock} className={"mr-1"}/>
                         {task.date}
                     </div>
