@@ -20,11 +20,7 @@ import * as Joi from "joi";
                     .default('development'),
                 DATABASE_URL: Joi.string().required(),
                 PORT: Joi.number().default(3000)
-            }),
-            validationOptions: {
-                allowUnknown: false,
-                abortEarly: true,
-            },
+            })
         }),
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
