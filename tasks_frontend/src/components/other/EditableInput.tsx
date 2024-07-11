@@ -15,7 +15,7 @@ export const EditableInput: FC<EditableInputProps> =
 
         if (isEditable) {
             return (
-                <div>
+                <div className={'flex flex-row gap-2'}>
                     <input
                         data-testid='editable-input'
                         className={'bg-transparent border border-solid max-w-52'}
@@ -24,10 +24,9 @@ export const EditableInput: FC<EditableInputProps> =
                         onChange={handleChange}
                     />
                     <button
-                        style={{color: "#4289A7"}}
                         onClick={handleSave}
-                        className={'border-none mr-5'}>
-                        <FontAwesomeIcon icon={fas.faEdit}></FontAwesomeIcon>
+                        className={'border-none mr-5 text-green-800'}>
+                        <FontAwesomeIcon icon={fas.faCheck}></FontAwesomeIcon>
                     </button>
                 </div>
             );

@@ -12,9 +12,6 @@ export class TasksList {
   @Column()
   title: string;
 
-  @Column()
-  number: number;
-
   @OneToMany(type => Task, task => task.list, {eager: true, cascade: true, onDelete: "CASCADE"})
   tasks: Task[]
 

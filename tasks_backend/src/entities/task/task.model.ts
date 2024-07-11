@@ -20,6 +20,9 @@ export class Task {
   date: string
 
   @Column()
+  createdDate: Date
+
+  @Column()
   priority: TaskPriority
 
   @Column()

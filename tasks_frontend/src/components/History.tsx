@@ -2,7 +2,7 @@ import {fas} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {uiActions} from "../store/slices/ui.slice";
 import {useGetAllHistoryQuery} from "../store/apis/task.api";
-import {useAppDispatch, useAppSelector} from "../app/hooks";
+import {useAppDispatch, useAppSelector} from "../hooks/redux-ts.hooks";
 
 
 export const History = () => {
@@ -13,6 +13,7 @@ export const History = () => {
     const handleCloseHistory = () => {
         dispatcher(uiActions.setHistoryOpenState(false));
     }
+
     return (
         <div
             style={{background: '#4289A7'}}

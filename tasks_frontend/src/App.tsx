@@ -5,45 +5,50 @@ import React from "react";
 import {ModalWindow} from "./components/modal/ModalWindow";
 import {uiActions} from "./store/slices/ui.slice";
 import {ErrorContainer} from "./components/other/ErrorContainer";
-import {useNavigate} from "react-router-dom";
-import {useAppDispatch, useAppSelector} from "./app/hooks";
+import {useAppDispatch, useAppSelector} from "./hooks/redux-ts.hooks";
 import {Board} from "./components/Board";
 import {faTrello} from "@fortawesome/free-brands-svg-icons";
 import Button from "./components/other/Button";
+import {modalWindowAction} from "./store/slices/modal.slice";
 
 
 function App() {
-    const navigate = useNavigate();
     const dispatcher = useAppDispatch();
-    const {modalOpenState, historyOpenState, selectedBoardId} = useAppSelector(state => state.ui);
+    const {visible: modalVisible} = useAppSelector(state => state.modal);
+    const {historyOpenState, selectedBoardId} = useAppSelector(state => state.ui);
     const {isError} = useAppSelector(state => state.error);
 
-
+    const openModalWindow = () => {
+        dispatcher(modalWindowAction.setModalVisible(true));
+    }
     const handleCreateTasksList = () => {
-        navigate('task-list/create');
-        dispatcher(uiActions.setModalOpenState(true));
+        openModalWindow();
+        dispatcher(modalWindowAction.setModalContent({contentType: "TaskListAddForm", contentProps: {}}))
     }
     const handleCreateBoard = () => {
-        navigate('board/create');
-        dispatcher(uiActions.setModalOpenState(true));
+        openModalWindow();
+        dispatcher(modalWindowAction.setModalContent({contentType: "BoardAddForm", contentProps: {}}))
     }
 
     const handleHistoryClicked = () => {
         dispatcher(uiActions.setHistoryOpenState(true));
     }
 
+
+
     return (
 
         <div>
+
             <div
                 style={{background: 'linear-gradient(to right, #4188A7, #D9ECDB'}}
-                className={"flex flex-row justify-between pl-3 py-2 align-middle"}>
+                className={"flex flex-row justify-between px-3 py-2 align-middle"}>
                 <div id={'header-title'} className={"font-bold text-2xl text-center text-white"}>
                     <FontAwesomeIcon className={'mr-2'} icon={faTrello}></FontAwesomeIcon>
                     Trello
                 </div>
 
-                <div id={'options'} className={'flex align-middle'}>
+                <div id={'options'} className={'flex gap-3 align-middle'}>
                     <Button
                         onClick={handleHistoryClicked}
                     >
@@ -85,7 +90,7 @@ function App() {
             }
 
             {
-                modalOpenState && <ModalWindow/>
+                modalVisible && <ModalWindow/>
             }
             {
                 isError && <ErrorContainer></ErrorContainer>

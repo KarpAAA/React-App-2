@@ -6,6 +6,7 @@ export class Task {
     constructor(
         public title: string,
         public content: string,
+        public createdDate: string,
         public date: string,
         public status: TaskStatus,
         public priority: TaskPriority,

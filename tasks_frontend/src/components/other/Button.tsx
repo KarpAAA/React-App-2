@@ -1,14 +1,12 @@
-import React, { ReactNode, ButtonHTMLAttributes } from "react";
+import React, { ButtonHTMLAttributes } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-    children: ReactNode;
 }
 
 const Button: React.FC<ButtonProps> = ({ children, ...props }) => {
     return (
         <button
-            style={{backgroundColor: '#4188A7'}}
-            className="mr-5 text-white rounded px-2 "
+            className="text-white rounded px-2 bg-blue-custom hover:bg-blue-custom-hvr"
             {...props}
         >
             {children}

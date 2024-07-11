@@ -27,7 +27,7 @@ export class TasksService {
 
     const list =
       await this.tasksListRepository.findOne({ where: { id: tasksListId } });
-    return this.taskRepository.save({ list, date: new Date(date), ...createTaskDto});
+    return this.taskRepository.save({ list, date: new Date(date), ...createTaskDto, createdDate: new Date()});
   }
 
 

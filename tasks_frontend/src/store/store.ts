@@ -2,19 +2,15 @@ import {configureStore} from "@reduxjs/toolkit";
 import {taskApi} from "./apis/task.api";
 import {setupListeners} from "@reduxjs/toolkit/query";
 import uiSlice from "./slices/ui.slice";
-import taskFormSlice from "./slices/task.form.slice";
 import errorSlice from "./slices/error.slice";
-import taskListFormSlice from "./slices/task.list.form.slice";
-import boardFormSlice from "./slices/board.form.slice";
+import modalWindowSlice from "./slices/modal.slice";
 
 export const store = configureStore({
     reducer: {
         [taskApi.reducerPath]: taskApi.reducer,
         ui: uiSlice,
-        taskForm: taskFormSlice,
         error: errorSlice,
-        taskListForm: taskListFormSlice,
-        board: boardFormSlice,
+        modal: modalWindowSlice,
     },
 
     middleware: (getDefaultMiddleware) =>
@@ -31,10 +27,7 @@ export function createTestStore() {
         reducer: {
             [taskApi.reducerPath]: taskApi.reducer,
             ui: uiSlice,
-            taskForm: taskFormSlice,
             error: errorSlice,
-            taskListForm: taskListFormSlice,
-            board: boardFormSlice,
         },
 
         middleware: (getDefaultMiddleware) =>

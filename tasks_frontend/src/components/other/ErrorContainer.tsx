@@ -1,4 +1,4 @@
-import {useAppSelector} from "../../app/hooks";
+import {useAppSelector} from "../../hooks/redux-ts.hooks";
 
 
 export const ErrorContainer = () => {

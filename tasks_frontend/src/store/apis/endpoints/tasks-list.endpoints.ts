@@ -1,6 +1,3 @@
-import {Task} from "../../../types/task";
-import {CreateTaskDto} from "../../../types/dto/create.task.dto";
-import {MoveTaskDto} from "../../../types/dto/move.task.dto";
 import {BaseQueryFn, EndpointBuilder, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta} from "@reduxjs/toolkit/query";
 import {CreateTaskListDTO} from "../../../types/dto/create.task.list.dto";
 import {UpdateOrderTaskListDTO} from "../../../types/dto/update.order.task.list.dto";

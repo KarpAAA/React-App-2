@@ -1,45 +1,18 @@
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {fas} from "@fortawesome/free-solid-svg-icons";
-import {uiActions} from "../../store/slices/ui.slice";
-import {useParams} from "react-router-dom";
 import {useGetTaskByIdQuery} from "../../store/apis/task.api";
-import {useAppDispatch} from "../../app/hooks";
 import {FC} from "react";
 
-type TaskDetailedProps =  {
-    modalContainer: HTMLElement | null
+type TaskDetailedProps = {
+    id: string
 }
-export const TaskDetailed: FC<TaskDetailedProps> = ({modalContainer}) => {
-    const dispatcher = useAppDispatch();
-
-    const {id} = useParams();
+export const TaskDetailed: FC<TaskDetailedProps> = ({id}) => {
     const {data: task} = useGetTaskByIdQuery(parseInt(id!));
 
-    if (modalContainer) {
-        modalContainer.style.left = '10%';
-        modalContainer.style.top = '10%';
-        modalContainer.style.bottom = '10%';
-        modalContainer.style.right = '10%';
-        modalContainer.style.width = '80%';
-        modalContainer.style.height = '80%';
-    }
-
-    const handleModalClose = () => {
-        dispatcher(uiActions.setModalOpenState(false));
-    }
-
     return (
-        <div
-            className={"w-full h-full bg-white"}>
-            <div
-                style={{background: '#4289A7'}}
-                onClick={handleModalClose}
-                className={'flex justify-end text-white text-3xl px-5 py-2 -full rounded-t'}>
-                <FontAwesomeIcon icon={fas.faXmark}/>
-            </div>
-
-            { task &&
-                <div className={'flex h-full'}>
+        <>
+            {task &&
+                <div className={'flex'}>
                     <div className={'box-border w-3/5 bg-white p-10'}>
                         <div className={'mt-5 flex flex-col'}>
                             <div className={'flex flex-row justify-between align-middle'}>
@@ -104,7 +77,6 @@ export const TaskDetailed: FC<TaskDetailedProps> = ({modalContainer}) => {
 
                 </div>
             }
-
-        </div>
+        </>
     );
 }

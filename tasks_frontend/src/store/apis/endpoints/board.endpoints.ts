@@ -1,5 +1,4 @@
 import {BaseQueryFn, EndpointBuilder, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta} from "@reduxjs/toolkit/query";
-import {Operation} from "../../../types/operation";
 import {Board} from "../../../types/board";
 import {CreateBoardDTO} from "../../../types/dto/create.board.dto";
 

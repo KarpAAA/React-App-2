@@ -6,28 +6,39 @@ import {
     useGetAllBoardsQuery,
     useGetBoardByIdQuery
 } from "../store/apis/task.api";
-import {useAppDispatch, useAppSelector} from "../app/hooks";
+import {useAppDispatch, useAppSelector} from "../hooks/redux-ts.hooks";
 import {uiActions} from "../store/slices/ui.slice";
 import Button from "./other/Button";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {fas} from "@fortawesome/free-solid-svg-icons";
 import {EditableInput} from "./other/EditableInput";
-import {boardFormAction} from "../store/slices/board.form.slice";
+import IconButton from "./other/IconButton";
+import {Board as BoardType} from "../types/board";
+import {useEdgeScrolling} from "../hooks/useEdgeScrolling";
+import {useScrollBy} from "../hooks/useScrollBy";
 
 
 type BoardProps = {}
 export const Board: FC<BoardProps> = () => {
     const dispatcher = useAppDispatch();
     const [isEditable, setIsEditable] = useState(false);
+    const [boardEditState, setBoardEditState] = useState<BoardType | null>(null);
+
     const boardContainerRef = useRef<HTMLDivElement>(null);
+    const {handleScrollRight,handleScrollLeft} = useScrollBy(boardContainerRef);
+    const {startScrolling, stopScrolling} = useEdgeScrolling(boardContainerRef);
 
-    const {board: boardState} = useAppSelector(state => state.board)
     const {selectedBoardId} = useAppSelector(state => state.ui);
-
     const {data: boards} = useGetAllBoardsQuery();
     const {data: board} = useGetBoardByIdQuery(selectedBoardId, {
         skip: !selectedBoardId
     });
+
+    useEffect(() => {
+        if (board) {
+            setBoardEditState({...board})
+        }
+    }, [board]);
 
     const [editBoard] = useEditBoardMutation();
     const [deleteBoard] = useDeleteBoardMutation();
@@ -37,37 +48,15 @@ export const Board: FC<BoardProps> = () => {
             dispatcher(uiActions.setSelectedBoard(boards[0].id))
         }
     }, [boards, dispatcher, selectedBoardId]);
-    useEffect(() => {
-        dispatcher(boardFormAction.boardPropertyChange({
-            property: "title",
-            value: board?.title
-        }))
-    }, [board, dispatcher]);
+
+
     const handleSelectedBoardChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         if (boards) {
             dispatcher(uiActions.setSelectedBoard(e.target.value));
         }
     }
-
-    const handleScrollRight = () => {
-        if (boardContainerRef && boardContainerRef.current) {
-            boardContainerRef.current.scrollBy({
-                left: boardContainerRef.current.offsetWidth,
-                behavior: 'smooth'
-            });
-        }
-    };
-    const handleScrollLeft = () => {
-        if (boardContainerRef && boardContainerRef.current) {
-            boardContainerRef.current.scrollBy({
-                left: -boardContainerRef.current.offsetWidth,
-                behavior: 'smooth'
-            });
-        }
-    };
-
     const handleBoardEdit = async () => {
-        await editBoard({...boardState, id: board?.id});
+        await editBoard({...boardEditState, id: board?.id});
         setIsEditable(false);
     }
     const handleBoardEditStart = () => {
@@ -80,6 +69,17 @@ export const Board: FC<BoardProps> = () => {
 
     return (
         <div>
+            <div
+                className="absolute left-0 top-0 bottom-0 w-8 cursor-pointer"
+                onDragOver={() => startScrolling("left")}
+                onDragLeave={stopScrolling}
+            ></div>
+            <div
+                className="absolute right-0 top-0 bottom-0 w-8 cursor-pointer"
+                onDragOver={() => startScrolling("right")}
+                onDragLeave={stopScrolling}
+            ></div>
+
             {boards && boards.length > 0 && selectedBoardId &&
                 <div className={'flex flex-row justify-between py-4'}>
                     <div className={'flex flex-row'}>
@@ -97,38 +97,38 @@ export const Board: FC<BoardProps> = () => {
 
 
                         <div id={'header-title'}
-                             className={"flex flex-row ml-3 font-bold text-white text-2xl"}>
+                             className={"flex flex-row ml-3 gap-3 font-bold text-white text-2xl"}>
                             <EditableInput
                                 initialValue={board?.title!}
-                                value={boardState.title}
+                                value={boardEditState?.title || ''}
                                 isEditable={isEditable}
                                 handleSave={handleBoardEdit}
                                 handleChange={(e) => {
-                                    dispatcher(boardFormAction.boardPropertyChange({
-                                        property: "title",
-                                        value: e.target.value
-                                    }))
+                                    setBoardEditState((prev) => {
+                                        if (prev) {
+                                            return {...prev, title: e.target.value};
+                                        }
+                                        return prev;
+                                    })
                                 }}
                             />
                             {!isEditable &&
-                                <button
-                                    style={{color: "#4188A7"}}
+                                <IconButton
                                     onClick={handleBoardEditStart}
-                                    className={'border-none mx-4'}>
+                                >
                                     <FontAwesomeIcon icon={fas.faEdit}></FontAwesomeIcon>
-                                </button>}
-                            <button
-                                style={{color: "#4188A7"}}
-                                onClick={handleBoardDelete}
-                                className={'border-none'}>
+                                </IconButton>
+                            }
+                            <IconButton
+                                onClick={handleBoardDelete}>
                                 <FontAwesomeIcon icon={fas.faTrash}></FontAwesomeIcon>
-                            </button>
+                            </IconButton>
                         </div>
 
                     </div>
 
 
-                    <div>
+                    <div className={'flex gap-3'}>
                         <Button
                             onClick={handleScrollLeft}>
                             <FontAwesomeIcon className={'px-1'} icon={fas.faArrowLeft}/>
@@ -148,9 +148,14 @@ export const Board: FC<BoardProps> = () => {
             {board && selectedBoardId && boards && boards.length > 0 &&
                 <div id={"tasks-lists"}
                      ref={boardContainerRef}
-                     className={'flex flex-nowrap  overflow-x-auto w-100 min-h-60'}>
+                     className={'flex gap-3 overflow-x-auto min-h-60'}>
                     {board.tasksLists && board.tasksLists.map(list =>
-                        <TaskList key={list.id} list={list}></TaskList>
+                        <div
+                            className={'flex-shrink-0' +
+                                ' w-full 2xl:w-1/4 xl:w-1/4 lg:w-1/3 md:w-1/3 sm:w-1/2 xs:w-1/2'}
+                            key={list.id}>
+                            <TaskList list={list}></TaskList>
+                        </div>
                     )}
                 </div>
             }
