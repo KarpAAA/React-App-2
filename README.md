@@ -1,6 +1,8 @@
-# React_App
+# [React_App](https://react-app-2-4gso2bnck-karpaaas-projects.vercel.app/)
 
 Project for task managmant
+Delpoyed version
+<br>[Delpoyed](https://react-app-2-4gso2bnck-karpaaas-projects.vercel.app/)
 
 ## Instalation
 
