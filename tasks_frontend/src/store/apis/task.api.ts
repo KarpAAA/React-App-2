@@ -7,7 +7,7 @@ import BoardEndpoints from "./endpoints/board.endpoints";
 
 export const taskApi = createApi({
     reducerPath: 'taskApi',
-    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:3000'}),
+    baseQuery: fetchBaseQuery({baseUrl: process.env.REACT_APP_PUBLIC_URL}),
     tagTypes: ["Task", "History", "Board"],
     endpoints: (builder) => ({
         ...TaskEndpoints(builder),
@@ -18,7 +18,8 @@ export const taskApi = createApi({
 })
 
 export const {
-    useDeleteBoardMutation, useGetBoardByIdQuery,useGetAllBoardsQuery, useCreateBoardMutation,  useEditBoardMutation,
-    useEditOrderTaskListMutation,  useEditTaskListMutation, useDeleteTaskListMutation, useCreateTaskListMutation,
-    useGetTaskByIdQuery, useCreateTaskMutation, useDeleteTaskMutation, useEditTaskMutation,useMoveTaskMutation,
-    useGetAllHistoryQuery} = taskApi
+    useDeleteBoardMutation, useGetBoardByIdQuery, useGetAllBoardsQuery, useCreateBoardMutation, useEditBoardMutation,
+    useEditOrderTaskListMutation, useEditTaskListMutation, useDeleteTaskListMutation, useCreateTaskListMutation,
+    useGetTaskByIdQuery, useCreateTaskMutation, useDeleteTaskMutation, useEditTaskMutation, useMoveTaskMutation,
+    useGetAllHistoryQuery
+} = taskApi
