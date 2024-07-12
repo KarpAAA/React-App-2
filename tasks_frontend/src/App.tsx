@@ -11,6 +11,9 @@ import {faTrello} from "@fortawesome/free-brands-svg-icons";
 import Button from "./components/other/Button";
 import {modalWindowAction} from "./store/slices/modal.slice";
 
+console.log(process.env)
+console.log(process.env.REACT_APP_PUBLIC_URL)
+console.log(process.env.PUBLIC_URL)
 
 function App() {
     const dispatcher = useAppDispatch();
